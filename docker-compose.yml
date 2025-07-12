@@ -23,7 +23,7 @@ services:
     ports:
       - "8081:80"
     environment:
-      PMA_HOST: http://172.19.254.127/
+      PMA_HOST: 172.19.254.127
       PMA_USER: root
       PMA_PASSWORD: rootpassword
     depends_on:
