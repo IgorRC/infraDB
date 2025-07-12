@@ -16,18 +16,35 @@ services:
       - ./db:/docker-entrypoint-initdb.d
       - mysql_data:/var/lib/mysql
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin_sgh
-    restart: always
-    ports:
-      - "8081:80"
+  postgres:
+    image: postgres:14
+    container_name: postgres_vacunas
     environment:
-      PMA_HOST: 172.19.254.127
-      PMA_USER: root
-      PMA_PASSWORD: rootpassword
-    depends_on:
-      - mysql
+      POSTGRES_DB: vacunas_db
+      POSTGRES_USER: vacunas_user
+      POSTGRES_PASSWORD: vacunas_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/schema_control_vacunas.sql:/docker-entrypoint-initdb.d/schema_control_vacunas.sql
+      - ./db/postgresql.conf:/etc/postgresql/postgresql.conf         # Montar config
+      - ./db/pg_hba.conf:/etc/postgresql/pg_hba.conf                 # Montar auth rules
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf # Usar config personalizada
+
+
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   container_name: phpmyadmin_sgh
+  #   restart: always
+  #   ports:
+  #     - "8081:80"
+  #   environment:
+  #     PMA_HOST: 172.19.254.127
+  #     PMA_USER: root
+  #     PMA_PASSWORD: rootpassword
+  #   depends_on:
+  #     - mysql
 
 volumes:
   mysql_data:
+  postgres_data:
